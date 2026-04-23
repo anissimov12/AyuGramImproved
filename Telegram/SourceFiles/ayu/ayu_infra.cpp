@@ -41,6 +41,10 @@ void initUiSettings() {
 	AyuUiSettings::setWideMultiplier(settings.wideMultiplier());
 	AyuUiSettings::setMaterialSwitches(settings.materialSwitches());
 	AyuUiSettings::setAvatarCorners(settings.avatarCorners());
+	AyuUiSettings::setCursorShape(static_cast<AyuUiSettings::CursorShape>(static_cast<int>(settings.cursorShape())));
+	AyuUiSettings::setCursorBlinkDelay(settings.cursorBlinkDelay());
+	AyuUiSettings::setCursorAnimationEnabled(settings.cursorAnimationEnabled());
+	AyuUiSettings::setCursorAnimationSpeed(settings.cursorAnimationSpeed());
 	Ui::SetAppliedBubbleRadius(settings.messageBubbleRadius());
 }
 

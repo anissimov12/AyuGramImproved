@@ -45,6 +45,13 @@ enum class TranslationProvider {
 	Native = 3,
 };
 
+enum class CursorShape {
+	Default = 0,
+	Line = 1,
+	Block = 2,
+	Underline = 3,
+};
+
 NLOHMANN_JSON_SERIALIZE_ENUM(PeerIdDisplay, {
 	{PeerIdDisplay::Hidden, 0},
 	{PeerIdDisplay::TelegramApi, 1},
@@ -68,6 +75,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(TranslationProvider, {
 	{TranslationProvider::Google, "google"},
 	{TranslationProvider::Yandex, "yandex"},
 	{TranslationProvider::Native, "native"},
+})
+
+NLOHMANN_JSON_SERIALIZE_ENUM(CursorShape, {
+	{CursorShape::Default, 0},
+	{CursorShape::Line, 1},
+	{CursorShape::Block, 2},
+	{CursorShape::Underline, 3},
 })
 
 class GhostModeAccountSettings {
@@ -330,6 +344,11 @@ public:
 	[[nodiscard]] int avatarCorners() const { return _avatarCorners.current(); }
 	[[nodiscard]] bool singleCornerRadius() const { return _singleCornerRadius.current(); }
 
+	[[nodiscard]] CursorShape cursorShape() const { return _cursorShape.current(); }
+	[[nodiscard]] int cursorBlinkDelay() const { return _cursorBlinkDelay.current(); }
+	[[nodiscard]] bool cursorAnimationEnabled() const { return _cursorAnimationEnabled.current(); }
+	[[nodiscard]] int cursorAnimationSpeed() const { return _cursorAnimationSpeed.current(); }
+
 	void setSaveDeletedMessages(bool val);
 	void setSaveMessagesHistory(bool val);
 	void setSaveForBots(bool val);
@@ -413,6 +432,10 @@ public:
 	void setCrashReporting(bool val);
 	void setAvatarCorners(int val);
 	void setSingleCornerRadius(bool val);
+	void setCursorShape(CursorShape val);
+	void setCursorBlinkDelay(int val);
+	void setCursorAnimationEnabled(bool val);
+	void setCursorAnimationSpeed(int val);
 
 	[[nodiscard]] rpl::producer<bool> useGlobalGhostModeValue() const { return _useGlobalGhostMode.value(); }
 	[[nodiscard]] rpl::producer<bool> useGlobalGhostModeChanges() const { return _useGlobalGhostMode.changes(); }
@@ -582,6 +605,14 @@ public:
 	[[nodiscard]] rpl::producer<int> avatarCornersChanges() const { return _avatarCorners.changes(); }
 	[[nodiscard]] rpl::producer<bool> singleCornerRadiusValue() const { return _singleCornerRadius.value(); }
 	[[nodiscard]] rpl::producer<bool> singleCornerRadiusChanges() const { return _singleCornerRadius.changes(); }
+	[[nodiscard]] rpl::producer<CursorShape> cursorShapeValue() const { return _cursorShape.value(); }
+	[[nodiscard]] rpl::producer<CursorShape> cursorShapeChanges() const { return _cursorShape.changes(); }
+	[[nodiscard]] rpl::producer<int> cursorBlinkDelayValue() const { return _cursorBlinkDelay.value(); }
+	[[nodiscard]] rpl::producer<int> cursorBlinkDelayChanges() const { return _cursorBlinkDelay.changes(); }
+	[[nodiscard]] rpl::producer<bool> cursorAnimationEnabledValue() const { return _cursorAnimationEnabled.value(); }
+	[[nodiscard]] rpl::producer<bool> cursorAnimationEnabledChanges() const { return _cursorAnimationEnabled.changes(); }
+	[[nodiscard]] rpl::producer<int> cursorAnimationSpeedValue() const { return _cursorAnimationSpeed.value(); }
+	[[nodiscard]] rpl::producer<int> cursorAnimationSpeedChanges() const { return _cursorAnimationSpeed.changes(); }
 
 	friend void to_json(nlohmann::json &j, const AyuSettings &s);
 	friend void from_json(const nlohmann::json &j, AyuSettings &s);
@@ -675,6 +706,10 @@ private:
 	rpl::variable<bool> _crashReporting = true;
 	rpl::variable<int> _avatarCorners = 23;
 	rpl::variable<bool> _singleCornerRadius = false;
+	rpl::variable<CursorShape> _cursorShape = CursorShape::Default;
+	rpl::variable<int> _cursorBlinkDelay = 500;
+	rpl::variable<bool> _cursorAnimationEnabled = true;
+	rpl::variable<int> _cursorAnimationSpeed = 45;
 
 	rpl::variable<bool> _useGlobalGhostMode = true;
 	std::map<uint64, std::unique_ptr<GhostModeAccountSettings>> _ghostAccounts;

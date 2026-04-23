@@ -478,6 +478,13 @@ void AyuSettings::validate() {
 		modified = true;
 	}
 
+	validateEnum(_cursorShape, defaults._cursorShape, 3);
+	validateRange(_cursorBlinkDelay,
+		AyuUiSettings::kMinCursorBlinkDelay,
+		AyuUiSettings::kMaxCursorBlinkDelay,
+		defaults._cursorBlinkDelay);
+	validateRange(_cursorAnimationSpeed, 5, 95, defaults._cursorAnimationSpeed);
+
 	validateRange(_messageBubbleRadius, 0, 16, defaults._messageBubbleRadius);
 	validateRange(_wideMultiplier, 0.5, 4.0, defaults._wideMultiplier);
 	validateRange(_recentStickersCount, 1, 200, defaults._recentStickersCount);
@@ -1014,6 +1021,34 @@ void AyuSettings::setSingleCornerRadius(bool val) {
 	save();
 }
 
+void AyuSettings::setCursorShape(CursorShape val) {
+	if (_cursorShape.current() == val) return;
+	_cursorShape = val;
+	AyuUiSettings::setCursorShape(static_cast<AyuUiSettings::CursorShape>(static_cast<int>(val)));
+	save();
+}
+
+void AyuSettings::setCursorBlinkDelay(int val) {
+	if (_cursorBlinkDelay.current() == val) return;
+	_cursorBlinkDelay = val;
+	AyuUiSettings::setCursorBlinkDelay(val);
+	save();
+}
+
+void AyuSettings::setCursorAnimationEnabled(bool val) {
+	if (_cursorAnimationEnabled.current() == val) return;
+	_cursorAnimationEnabled = val;
+	AyuUiSettings::setCursorAnimationEnabled(val);
+	save();
+}
+
+void AyuSettings::setCursorAnimationSpeed(int val) {
+	if (_cursorAnimationSpeed.current() == val) return;
+	_cursorAnimationSpeed = val;
+	AyuUiSettings::setCursorAnimationSpeed(val);
+	save();
+}
+
 void to_json(nlohmann::json &j, const AyuSettings &s) {
 	std::map<std::string, GhostModeAccountSettings> ghostAccounts;
 	for (const auto &[key, value] : s._ghostAccounts) {
@@ -1106,6 +1141,10 @@ void to_json(nlohmann::json &j, const AyuSettings &s) {
 		{"crashReporting", s._crashReporting.current()},
 		{"avatarCorners", s._avatarCorners.current()},
 		{"singleCornerRadius", s._singleCornerRadius.current()},
+		{"cursorShape", s._cursorShape.current()},
+		{"cursorBlinkDelay", s._cursorBlinkDelay.current()},
+		{"cursorAnimationEnabled", s._cursorAnimationEnabled.current()},
+		{"cursorAnimationSpeed", s._cursorAnimationSpeed.current()},
 		{"messageShotSettings", s._messageShotSettings}
 	};
 }
@@ -1206,6 +1245,10 @@ void from_json(const nlohmann::json &j, AyuSettings &s) {
 	s._crashReporting = j.value("crashReporting", defaults._crashReporting.current());
 	s._avatarCorners = j.value("avatarCorners", defaults._avatarCorners.current());
 	s._singleCornerRadius = j.value("singleCornerRadius", defaults._singleCornerRadius.current());
+	s._cursorShape = j.value("cursorShape", defaults._cursorShape.current());
+	s._cursorBlinkDelay = j.value("cursorBlinkDelay", defaults._cursorBlinkDelay.current());
+	s._cursorAnimationEnabled = j.value("cursorAnimationEnabled", defaults._cursorAnimationEnabled.current());
+	s._cursorAnimationSpeed = j.value("cursorAnimationSpeed", defaults._cursorAnimationSpeed.current());
 
 	if (j.contains("messageShotSettings") && j["messageShotSettings"].is_object()) {
 		j["messageShotSettings"].get_to(s._messageShotSettings);
